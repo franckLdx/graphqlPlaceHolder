@@ -25,7 +25,7 @@ func FetchPost(id int) (*Post, error) {
 	var post Post
 	filter := fmt.Sprintf("%s/%d", postsFilter, id)
 	if err := fetch(filter, &post); err != nil {
-		return nil, fmt.Errorf("Failed to get post: %v ", id, err)
+		return nil, fmt.Errorf("Failed to get post %d: %v ", id, err)
 	}
 	return &post, nil
 }

@@ -22,11 +22,37 @@ func getQuery() *graphql.Object {
 					return httpClient.FetchPosts()
 				},
 			},
+			"post": &graphql.Field{
+				Name: "Post",
+				Type: postType,
+				Args: graphql.FieldConfigArgument{
+					"id": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.Int),
+					},
+				},
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					id := p.Args["id"].(int)
+					return httpClient.FetchPost(id)
+				},
+			},
 			"comments": &graphql.Field{
 				Name: "Comments",
 				Type: graphql.NewList(commentType),
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					return httpClient.FetchComments()
+				},
+			},
+			"comment": &graphql.Field{
+				Name: "Comment",
+				Type: commentType,
+				Args: graphql.FieldConfigArgument{
+					"id": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.Int),
+					},
+				},
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					id := p.Args["id"].(int)
+					return httpClient.FetchComment(id)
 				},
 			},
 		},
