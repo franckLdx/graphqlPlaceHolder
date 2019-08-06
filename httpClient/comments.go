@@ -4,8 +4,6 @@ import (
 	"fmt"
 )
 
-const commentsUrl = "comments"
-
 type Comment struct {
 	PostID int    `json:"postId"`
 	ID     int    `json:"id"`
@@ -14,18 +12,20 @@ type Comment struct {
 	Body   string `json:"body"`
 }
 
+const commentsFilter = "comments"
+
 func FetchComments() (*[]Comment, error) {
 	var comments []Comment
-	if err := FetchList(commentsUrl, &comments); err != nil {
+	if err := fetch(commentsFilter, &comments); err != nil {
 		return nil, fmt.Errorf("Failed to get comments list", err)
 	}
 	return &comments, nil
 }
 
 func FetchCommentsOfPosts(postId int) (*[]Comment, error) {
-	filter := fmt.Sprint(postId, "/", commentsUrl)
+	filter := fmt.Sprint("posts/", postId, "/", commentsFilter)
 	var comments []Comment
-	if err := FetchList(filter, &comments); err != nil {
+	if err := fetch(filter, &comments); err != nil {
 		return nil, fmt.Errorf("Failed to get comments of post", postId, err)
 	}
 	return &comments, nil

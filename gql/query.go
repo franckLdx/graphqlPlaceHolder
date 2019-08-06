@@ -10,6 +10,7 @@ func getQuery() *graphql.Object {
 	postType := createPostType()
 	commentType := createCommentType()
 	updatePostType(postType, commentType)
+	updateCommentType(commentType, postType)
 
 	config := graphql.ObjectConfig{
 		Name: "Query",
@@ -23,7 +24,6 @@ func getQuery() *graphql.Object {
 			},
 			"comments": &graphql.Field{
 				Name: "Comments",
-
 				Type: graphql.NewList(commentType),
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					return httpClient.FetchComments()

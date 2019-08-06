@@ -11,10 +11,21 @@ type Post struct {
 	Body   string `json:"body"`
 }
 
+const postsFilter = "posts"
+
 func FetchPosts() (*[]Post, error) {
 	var posts []Post
-	if err := FetchList("posts", &posts); err != nil {
-		return nil, fmt.Errorf("Failed to get posts list", err)
+	if err := fetch(postsFilter, &posts); err != nil {
+		return nil, fmt.Errorf("Failed to get posts list: %v", err)
 	}
 	return &posts, nil
+}
+
+func FetchPost(id int) (*Post, error) {
+	var post Post
+	filter := fmt.Sprintf("%s/%d", postsFilter, id)
+	if err := fetch(filter, &post); err != nil {
+		return nil, fmt.Errorf("Failed to get post: %v ", id, err)
+	}
+	return &post, nil
 }

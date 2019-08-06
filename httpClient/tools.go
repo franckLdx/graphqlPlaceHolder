@@ -9,12 +9,8 @@ import (
 
 const server = "https://jsonplaceholder.typicode.com"
 
-func FetchList(what string, data interface{}) error {
-	url := fmt.Sprintf("%s/posts", server)
-	return fetch(url, data)
-}
-
-func fetch(url string, data interface{}) error {
+func fetch(filter string, data interface{}) error {
+	url := fmt.Sprintf("%s/%s", server, filter)
 	response, err := doFetch(url)
 	if err != nil {
 		return err

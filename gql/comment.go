@@ -1,6 +1,11 @@
 package gql
 
-import "github.com/graphql-go/graphql"
+import (
+	"fmt"
+	"graphqlPlaceHolder/httpClient"
+
+	"github.com/graphql-go/graphql"
+)
 
 func createCommentType() *graphql.Object {
 	config := graphql.ObjectConfig{
@@ -21,4 +26,20 @@ func createCommentType() *graphql.Object {
 		},
 	}
 	return graphql.NewObject(config)
+}
+
+func updateCommentType(commentType, postType *graphql.Object) {
+	commentType.AddFieldConfig(
+		"post",
+		&graphql.Field{
+			Type: graphql.NewNonNull(postType),
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				comment, ok := p.Source.(httpClient.Comment)
+				if !ok {
+					return nil, fmt.Errorf("failed to get comment")
+				}
+				return httpClient.FetchPost(comment.PostID)
+			},
+		},
+	)
 }
