@@ -7,14 +7,36 @@ import (
 )
 
 func getQuery() *graphql.Object {
+	userType := createUserType()
 	postType := createPostType()
 	commentType := createCommentType()
-	updatePostType(postType, commentType)
+	updateUserType(userType, postType)
+	updatePostType(postType, commentType, userType)
 	updateCommentType(commentType, postType)
 
 	config := graphql.ObjectConfig{
 		Name: "Query",
 		Fields: graphql.Fields{
+			"users": &graphql.Field{
+				Name: "Users",
+				Type: graphql.NewList(userType),
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					return httpClient.FetchUsers()
+				},
+			},
+			"user": &graphql.Field{
+				Name: "User",
+				Type: userType,
+				Args: graphql.FieldConfigArgument{
+					"id": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.Int),
+					},
+				},
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					id := p.Args["id"].(int)
+					return httpClient.FetchUser(id)
+				},
+			},
 			"posts": &graphql.Field{
 				Name: "Posts",
 				Type: graphql.NewList(postType),
