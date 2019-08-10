@@ -42,6 +42,32 @@ func updateUserType(userType, postType *graphql.Object) {
 	)
 }
 
+func createUsersField(userType *graphql.Object) *graphql.Field {
+	return &graphql.Field{
+		Name: "Users",
+		Type: graphql.NewList(userType),
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			return httpClient.FetchUsers()
+		},
+	}
+}
+
+func createUserField(userType *graphql.Object) *graphql.Field {
+	return &graphql.Field{
+		Name: "User",
+		Type: userType,
+		Args: graphql.FieldConfigArgument{
+			"id": &graphql.ArgumentConfig{
+				Type: graphql.NewNonNull(graphql.Int),
+			},
+		},
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			id := p.Args["id"].(int)
+			return httpClient.FetchUser(id)
+		},
+	}
+}
+
 func createGeoCoordinatesType() *graphql.Object {
 	config := graphql.ObjectConfig{
 		Name: "GeoCoordinates",

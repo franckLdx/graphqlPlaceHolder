@@ -54,6 +54,32 @@ func updatePostType(postType, commentType, userType *graphql.Object) {
 	)
 }
 
+func createPostsField(postType *graphql.Object) *graphql.Field {
+	return &graphql.Field{
+		Name: "Posts",
+		Type: graphql.NewList(postType),
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			return httpClient.FetchPosts()
+		},
+	}
+}
+
+func createPostField(postType *graphql.Object) *graphql.Field {
+	return &graphql.Field{
+		Name: "Post",
+		Type: postType,
+		Args: graphql.FieldConfigArgument{
+			"id": &graphql.ArgumentConfig{
+				Type: graphql.NewNonNull(graphql.Int),
+			},
+		},
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			id := p.Args["id"].(int)
+			return httpClient.FetchPost(id)
+		},
+	}
+}
+
 func getPost(p *graphql.ResolveParams) (*httpClient.Post, error) {
 	post, ok := p.Source.(*httpClient.Post)
 	if !ok {

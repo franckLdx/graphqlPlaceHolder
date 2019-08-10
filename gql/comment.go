@@ -43,3 +43,29 @@ func updateCommentType(commentType, postType *graphql.Object) {
 		},
 	)
 }
+
+func createCommentsField(commentType *graphql.Object) *graphql.Field {
+	return &graphql.Field{
+		Name: "Comments",
+		Type: graphql.NewList(commentType),
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			return httpClient.FetchComments()
+		},
+	}
+}
+
+func createCommentField(commentType *graphql.Object) *graphql.Field {
+	return &graphql.Field{
+		Name: "Comment",
+		Type: commentType,
+		Args: graphql.FieldConfigArgument{
+			"id": &graphql.ArgumentConfig{
+				Type: graphql.NewNonNull(graphql.Int),
+			},
+		},
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			id := p.Args["id"].(int)
+			return httpClient.FetchComment(id)
+		},
+	}
+}
