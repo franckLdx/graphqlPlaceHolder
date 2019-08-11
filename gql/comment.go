@@ -34,8 +34,8 @@ func updateCommentType(commentType, postType *graphql.Object) {
 		&graphql.Field{
 			Type: graphql.NewNonNull(postType),
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				comment, ok := p.Source.(httpClient.Comment)
-				if !ok {
+				comment, err := getComment(&p)
+				if err != nil {
 					return nil, fmt.Errorf("failed to get comment")
 				}
 				return httpClient.FetchPost(comment.PostID)
@@ -68,4 +68,14 @@ func createCommentField(commentType *graphql.Object) *graphql.Field {
 			return httpClient.FetchComment(id)
 		},
 	}
+}
+
+func getComment(p *graphql.ResolveParams) (*httpClient.Comment, error) {
+	if comment, ok := p.Source.(httpClient.Comment); ok {
+		return &comment, nil
+	}
+	if comment, ok := p.Source.(*httpClient.Comment); ok {
+		return comment, nil
+	}
+	return nil, fmt.Errorf("failed to get comment")
 }

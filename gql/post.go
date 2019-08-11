@@ -81,9 +81,11 @@ func createPostField(postType *graphql.Object) *graphql.Field {
 }
 
 func getPost(p *graphql.ResolveParams) (*httpClient.Post, error) {
-	post, ok := p.Source.(*httpClient.Post)
-	if !ok {
-		return nil, fmt.Errorf("failed to get post")
+	if post, ok := p.Source.(httpClient.Post); ok {
+		return &post, nil
 	}
-	return post, nil
+	if post, ok := p.Source.(*httpClient.Post); ok {
+		return post, nil
+	}
+	return nil, fmt.Errorf("failed to get post")
 }

@@ -108,9 +108,11 @@ func createCompanyType() *graphql.Object {
 }
 
 func getUser(p *graphql.ResolveParams) (*httpClient.User, error) {
-	user, ok := p.Source.(*httpClient.User)
-	if !ok {
-		return nil, fmt.Errorf("failed to get user")
+	if user, ok := p.Source.(httpClient.User); ok {
+		return &user, nil
 	}
-	return user, nil
+	if user, ok := p.Source.(*httpClient.User); ok {
+		return user, nil
+	}
+	return nil, fmt.Errorf("failed to get user")
 }
