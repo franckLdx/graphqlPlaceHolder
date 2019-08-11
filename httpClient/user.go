@@ -61,3 +61,12 @@ func FetchPostsOfUser(id int) (*[]Post, error) {
 	}
 	return &posts, nil
 }
+
+func FetchAlbumsOfUser(id int) (*[]Album, error) {
+	var albums []Album
+	filter := fmt.Sprintf("posts/%d/albums", id)
+	if err := fetch(filter, &albums); err != nil {
+		return nil, fmt.Errorf("Failed to get albums for user %d: %v ", id, err)
+	}
+	return &albums, nil
+}

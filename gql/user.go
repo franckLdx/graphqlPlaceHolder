@@ -26,7 +26,7 @@ func createUserType() *graphql.Object {
 	return graphql.NewObject(config)
 }
 
-func updateUserType(userType, postType *graphql.Object) {
+func updateUserType(userType, postType, albumType *graphql.Object) {
 	userType.AddFieldConfig(
 		"posts",
 		&graphql.Field{
@@ -37,6 +37,19 @@ func updateUserType(userType, postType *graphql.Object) {
 					return nil, err
 				}
 				return httpClient.FetchPostsOfUser(user.ID)
+			},
+		},
+	)
+	userType.AddFieldConfig(
+		"albums",
+		&graphql.Field{
+			Type: graphql.NewList(postType),
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				user, err := getUser(&p)
+				if err != nil {
+					return nil, err
+				}
+				return httpClient.FetchAlbumsOfUser(user.ID)
 			},
 		},
 	)

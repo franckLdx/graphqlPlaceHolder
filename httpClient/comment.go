@@ -24,11 +24,11 @@ func FetchComments() (*[]Comment, error) {
 
 func FetchComment(id int) (*Comment, error) {
 	filter := fmt.Sprintf("%s/%d", commentsFilter, id)
-	var comments Comment
-	if err := fetch(filter, &comments); err != nil {
+	var comment Comment
+	if err := fetch(filter, &comment); err != nil {
 		return nil, fmt.Errorf("Failed to get comment %d: %v", id, err)
 	}
-	return &comments, nil
+	return &comment, nil
 }
 
 func FetchCommentsOfPosts(postId int) (*[]Comment, error) {
