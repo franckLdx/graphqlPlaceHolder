@@ -1,9 +1,5 @@
 package httpClient
 
-import (
-	"fmt"
-)
-
 type Comment struct {
 	PostID int    `json:"postId"`
 	ID     int    `json:"id"`
@@ -12,30 +8,22 @@ type Comment struct {
 	Body   string `json:"body"`
 }
 
-const commentsFilter = "comments"
+const CommentResource Resource = "comments"
 
 func FetchComments() (*[]Comment, error) {
 	var comments []Comment
-	if err := fetch(commentsFilter, &comments); err != nil {
-		return nil, fmt.Errorf("Failed to get comments list", err)
-	}
-	return &comments, nil
+	err := FetchResources(CommentResource, &comments)
+	return &comments, err
 }
 
-func FetchComment(id int) (*Comment, error) {
-	filter := fmt.Sprintf("%s/%d", commentsFilter, id)
+func FetchComment(commentId int) (*Comment, error) {
 	var comment Comment
-	if err := fetch(filter, &comment); err != nil {
-		return nil, fmt.Errorf("Failed to get comment %d: %v", id, err)
-	}
-	return &comment, nil
+	err := FetchResource(CommentResource, commentId, &comment)
+	return &comment, err
 }
 
 func FetchCommentsOfPosts(postId int) (*[]Comment, error) {
-	filter := fmt.Sprintf("posts/%d/%s", postId, commentsFilter)
 	var comments []Comment
-	if err := fetch(filter, &comments); err != nil {
-		return nil, fmt.Errorf("Failed to get comments of post", postId, err)
-	}
-	return &comments, nil
+	err := FetchSubResources(PostResource, postId, CommentResource, &comments)
+	return &comments, err
 }

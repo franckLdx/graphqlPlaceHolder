@@ -5,12 +5,30 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
-const server = "https://jsonplaceholder.typicode.com"
+func FetchResources(resource Resource, data interface{}) error {
+	url := makeUrl(resource)
+	return fetch(url, data)
+}
 
-func fetch(filter string, data interface{}) error {
-	url := fmt.Sprintf("%s/%s", server, filter)
+func FetchResource(resource Resource, resourceId int, data interface{}) error {
+	url := makeUrl(resource, resourceId)
+	return fetch(url, data)
+}
+
+func FetchSubResources(resource Resource, resourceId int, subResource Resource, data interface{}) error {
+	url := makeUrl(resource, resourceId, subResource)
+	return fetch(url, data)
+}
+
+func FetchSubResource(resource Resource, resourceId int, subResource Resource, subResourceId int, data interface{}) error {
+	url := makeUrl(resource, resourceId, subResource, subResourceId)
+	return fetch(url, data)
+}
+
+func fetch(url string, data interface{}) error {
 	response, err := doFetch(url)
 	if err != nil {
 		return err
@@ -44,3 +62,17 @@ func responseToJson(response *http.Response, data interface{}) error {
 	}
 	return nil
 }
+
+func makeUrl(params ...interface{}) string {
+	var url strings.Builder
+	url.WriteString(server)
+	for _, str := range params {
+		url.WriteRune('/')
+		url.WriteString(fmt.Sprint(str))
+	}
+	return url.String()
+}
+
+const server = "https://jsonplaceholder.typicode.com"
+
+type Resource string

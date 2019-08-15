@@ -1,9 +1,5 @@
 package httpClient
 
-import (
-	"fmt"
-)
-
 type Post struct {
 	UserID int    `json:"userId"`
 	ID     int    `json:"id"`
@@ -11,21 +7,16 @@ type Post struct {
 	Body   string `json:"body"`
 }
 
-const postsFilter = "posts"
+const PostResource Resource = "posts"
 
 func FetchPosts() (*[]Post, error) {
 	var posts []Post
-	if err := fetch(postsFilter, &posts); err != nil {
-		return nil, fmt.Errorf("Failed to get posts list: %v", err)
-	}
-	return &posts, nil
+	err := FetchResources(PostResource, &posts)
+	return &posts, err
 }
 
 func FetchPost(id int) (*Post, error) {
 	var post Post
-	filter := fmt.Sprintf("%s/%d", postsFilter, id)
-	if err := fetch(filter, &post); err != nil {
-		return nil, fmt.Errorf("Failed to get post %d: %v ", id, err)
-	}
-	return &post, nil
+	err := FetchResource(PostResource, id, &post)
+	return &post, err
 }

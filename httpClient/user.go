@@ -1,9 +1,5 @@
 package httpClient
 
-import (
-	"fmt"
-)
-
 type Geo struct {
 	Lat string `json:"lat"`
 	Lng string `json:"lng"`
@@ -34,39 +30,28 @@ type User struct {
 	Company  Company `json:"company"`
 }
 
-const usersFilter = "users"
+const UserResource Resource = "users"
 
 func FetchUsers() (*[]User, error) {
 	var users []User
-	if err := fetch(usersFilter, &users); err != nil {
-		return nil, fmt.Errorf("Failed to get users list: %v", err)
-	}
-	return &users, nil
+	err := FetchResources(UserResource, &users)
+	return &users, err
 }
 
 func FetchUser(id int) (*User, error) {
 	var user User
-	filter := fmt.Sprintf("%s/%d", usersFilter, id)
-	if err := fetch(filter, &user); err != nil {
-		return nil, fmt.Errorf("Failed to get user %d: %v ", id, err)
-	}
-	return &user, nil
+	err := FetchResource(UserResource, id, &user)
+	return &user, err
 }
 
 func FetchPostsOfUser(id int) (*[]Post, error) {
 	var posts []Post
-	filter := fmt.Sprintf("posts?userId=%d", id)
-	if err := fetch(filter, &posts); err != nil {
-		return nil, fmt.Errorf("Failed to get user %d: %v ", id, err)
-	}
-	return &posts, nil
+	err := FetchSubResources(UserResource, id, PostResource, &posts)
+	return &posts, err
 }
 
 func FetchAlbumsOfUser(id int) (*[]Album, error) {
 	var albums []Album
-	filter := fmt.Sprintf("posts/%d/albums", id)
-	if err := fetch(filter, &albums); err != nil {
-		return nil, fmt.Errorf("Failed to get albums for user %d: %v ", id, err)
-	}
-	return &albums, nil
+	err := FetchSubResources(UserResource, id, AlbumResource, &albums)
+	return &albums, err
 }
