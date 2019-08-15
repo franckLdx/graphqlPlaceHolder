@@ -13,7 +13,7 @@ func getQuery() *graphql.Object {
 	updateUserType(userType, postType, albumType)
 	updatePostType(postType, commentType, userType)
 	updateCommentType(commentType, postType)
-	updateAlbumType(albumType, userType)
+	updateAlbumType(albumType, userType, photoType)
 	updatePhotoType(photoType, albumType)
 
 	config := graphql.ObjectConfig{

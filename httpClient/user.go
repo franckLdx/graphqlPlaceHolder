@@ -38,20 +38,20 @@ func FetchUsers() (*[]User, error) {
 	return &users, err
 }
 
-func FetchUser(id int) (*User, error) {
+func FetchUser(userId int) (*User, error) {
 	var user User
-	err := FetchResource(UserResource, id, &user)
+	err := FetchResource(UserResource, userId, &user)
 	return &user, err
 }
 
-func FetchPostsOfUser(id int) (*[]Post, error) {
+func FetchPostsOfUser(userId int) (*[]Post, error) {
 	var posts []Post
-	err := FetchSubResources(UserResource, id, PostResource, &posts)
+	err := FetchSubResources(UserResource, userId, PostResource, &posts)
 	return &posts, err
 }
 
-func FetchAlbumsOfUser(id int) (*[]Album, error) {
+func FetchAlbumsOfUser(userId int) (*[]Album, error) {
 	var albums []Album
-	err := FetchSubResources(UserResource, id, AlbumResource, &albums)
+	err := FetchSubResources(UserResource, userId, AlbumResource, &albums)
 	return &albums, err
 }

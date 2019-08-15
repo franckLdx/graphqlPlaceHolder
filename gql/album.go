@@ -22,7 +22,7 @@ func createAlbumType() *graphql.Object {
 	return graphql.NewObject(config)
 }
 
-func updateAlbumType(albumType, userType *graphql.Object) {
+func updateAlbumType(albumType, userType, photoType *graphql.Object) {
 	albumType.AddFieldConfig(
 		"user",
 		&graphql.Field{
@@ -33,6 +33,19 @@ func updateAlbumType(albumType, userType *graphql.Object) {
 					return nil, err
 				}
 				return httpClient.FetchUser(album.UserID)
+			},
+		},
+	)
+	albumType.AddFieldConfig(
+		"photos",
+		&graphql.Field{
+			Type: photoType,
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				album, err := getAlbum(&p)
+				if err != nil {
+					return nil, err
+				}
+				return httpClient.FetchPhotosOfAlbum(album.ID)
 			},
 		},
 	)

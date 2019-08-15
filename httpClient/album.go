@@ -14,8 +14,14 @@ func FetchAlbums() (*[]Album, error) {
 	return &albums, err
 }
 
-func FetchAlbum(id int) (*Album, error) {
+func FetchAlbum(albumId int) (*Album, error) {
 	var album Album
-	err := FetchResource(AlbumResource, id, &album)
+	err := FetchResource(AlbumResource, albumId, &album)
 	return &album, err
+}
+
+func FetchPhotosOfAlbum(albumId int) (*[]Photo, error) {
+	var photos []Photo
+	err := FetchSubResources(AlbumResource, albumId, PhotoResource, &photos)
+	return &photos, err
 }

@@ -43,7 +43,7 @@ func updateUserType(userType, postType, albumType *graphql.Object) {
 	userType.AddFieldConfig(
 		"albums",
 		&graphql.Field{
-			Type: graphql.NewList(postType),
+			Type: graphql.NewList(albumType),
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 				user, err := getUser(&p)
 				if err != nil {
