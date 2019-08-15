@@ -10,11 +10,13 @@ func getQuery() *graphql.Object {
 	commentType := createCommentType()
 	albumType := createAlbumType()
 	photoType := createPhotoType()
-	updateUserType(userType, postType, albumType)
+	todoType := createTodoType()
+	updateUserType(userType, postType, albumType, todoType)
 	updatePostType(postType, commentType, userType)
 	updateCommentType(commentType, postType)
 	updateAlbumType(albumType, userType, photoType)
 	updatePhotoType(photoType, albumType)
+	updateTodoType(todoType, userType)
 
 	config := graphql.ObjectConfig{
 		Name: "Query",
@@ -29,6 +31,8 @@ func getQuery() *graphql.Object {
 			"album":    createAlbumField(albumType),
 			"photos":   createPhotosField(photoType),
 			"photo":    createPhotoField(photoType),
+			"todos":    createTodosField(todoType),
+			"todo":     createTodoField(todoType),
 		},
 	}
 

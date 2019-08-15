@@ -26,7 +26,7 @@ func createUserType() *graphql.Object {
 	return graphql.NewObject(config)
 }
 
-func updateUserType(userType, postType, albumType *graphql.Object) {
+func updateUserType(userType, postType, albumType, todoType *graphql.Object) {
 	userType.AddFieldConfig(
 		"posts",
 		&graphql.Field{
@@ -50,6 +50,19 @@ func updateUserType(userType, postType, albumType *graphql.Object) {
 					return nil, err
 				}
 				return httpClient.FetchAlbumsOfUser(user.ID)
+			},
+		},
+	)
+	userType.AddFieldConfig(
+		"todos",
+		&graphql.Field{
+			Type: graphql.NewList(todoType),
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				user, err := getUser(&p)
+				if err != nil {
+					return nil, err
+				}
+				return httpClient.FetchTodosOfUser(user.ID)
 			},
 		},
 	)

@@ -55,3 +55,9 @@ func FetchAlbumsOfUser(userId int) (*[]Album, error) {
 	err := FetchSubResources(UserResource, userId, AlbumResource, &albums)
 	return &albums, err
 }
+
+func FetchTodosOfUser(userId int) (*[]Todo, error) {
+	var todos []Todo
+	err := FetchSubResources(UserResource, userId, TodoResource, &todos)
+	return &todos, err
+}
